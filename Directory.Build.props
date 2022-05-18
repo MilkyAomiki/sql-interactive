@@ -1,0 +1,10 @@
+<Project>
+	<PropertyGroup>
+		<MajorVersion>1</MajorVersion>
+		<MinorVersion>0</MinorVersion>
+		
+		<AssemblyTitle>SQL-Interactive Web API</AssemblyTitle>
+		<Authors>Alexander Afanasenko</Authors>
+		<Description>Web API для SQL тренажера, содержащий всю бизнес-логику приложения.</Description>
+	</PropertyGroup>
+</Project>

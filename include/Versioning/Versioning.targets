@@ -1,0 +1,41 @@
+<Project>
+	<UsingTask TaskName="ParseSemVer" AssemblyFile="$(MSBuildThisFileDirectory)Tasks\Versioning.dll" />
+	<UsingTask TaskName="GenerateVersion" AssemblyFile="$(MSBuildThisFileDirectory)Tasks\Versioning.dll" />
+
+	<PropertyGroup>
+		<VersionFile>$(MSBuildThisFileDirectory)..\..\Properties\VERSION</VersionFile>
+	</PropertyGroup>
+
+	<Target DependsOnTargets="_GetGitCommitInfo" BeforeTargets="PrepareForBuild" Name="GetVersion">
+		<Message Text="hey: $(VcsCommitCount) $(VcsCommitHash)" Importance="high"/>
+		<GenerateVersion
+			Major="$(MajorVersion)"
+			Minor="$(MinorVersion)"
+			PreRelease="$(PreReleaseVersion)"
+			VcsCommitCount="$(VcsCommitCount)"
+			VcsCommitHash="$(VcsCommitHash)"
+			VersionFile="$(VersionFile)">
+			<Output TaskParameter="Version" PropertyName="Version" />
+			<Output TaskParameter="MainVersion" PropertyName="MainVersion" />
+		</GenerateVersion>
+		<Message Text="hey hey: $(MainVersion)" Importance="high" />
+		<PropertyGroup>
+			<PackageVersion>$(Version)</PackageVersion>
+			<AssemblyVersion>$(MainVersion)</AssemblyVersion>
+			<FileVersion>$(MainVersion)</FileVersion>
+		</PropertyGroup>
+	</Target>
+
+	<!-- Produces: $(VcsCommitCount), $(VcsCommitHash) -->
+	<Target Name="_GetGitCommitInfo">
+		<Exec StandardOutputImportance="low" Command="git rev-list --count HEAD 2>nul" ConsoleToMSBuild="true">
+			<Output TaskParameter="ConsoleOutput" PropertyName="VcsCommitCount" />
+		</Exec>
+
+		<Exec StandardOutputImportance="low" Command="git rev-parse --short HEAD 2>nul" ConsoleToMSBuild="true">
+			<Output TaskParameter="ConsoleOutput" PropertyName="VcsCommitHash" />
+		</Exec>
+
+		<Delete Files="nul" />
+	</Target>
+</Project>
