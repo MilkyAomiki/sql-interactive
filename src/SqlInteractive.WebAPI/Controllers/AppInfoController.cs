@@ -6,11 +6,11 @@ namespace SqlInteractive.WebAPI.Controllers;
 
 [ApiController]
 [Route("app-info")]
-public class VersionController : ControllerBase
+public class AppInfoController : ControllerBase
 {
-    private readonly ILogger<VersionController> _logger;
+    private readonly ILogger<AppInfoController> _logger;
 
-    public VersionController(ILogger<VersionController> logger)
+    public AppInfoController(ILogger<AppInfoController> logger)
     {
         _logger = logger;
     }

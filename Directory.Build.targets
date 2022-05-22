@@ -1,4 +1,4 @@
 <Project>
-	<Import Project="include\Versioning\Versioning.targets" />
+	<!--Import Project="include\Versioning\Versioning.targets" /-->
 	
 </Project>
