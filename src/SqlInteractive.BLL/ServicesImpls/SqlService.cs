@@ -7,15 +7,22 @@ namespace SqlInteractive.BLL.ServicesImpls
 	public class SqlService : ISqlService
 	{
 		private readonly ISqlExecutor sqlExecutor;
+		private readonly ISqlSessionExecutor sqlSessionExecutor;
 
-		public SqlService(ISqlExecutor sqlExecutor)
+		public SqlService(ISqlExecutor sqlExecutor, ISqlSessionExecutor sqlSessionExecutor)
 		{
 			this.sqlExecutor = sqlExecutor;
+			this.sqlSessionExecutor = sqlSessionExecutor;
 		}
 
-		public Task<ICollection<Table>> ExecuteAsync(string sql, Session session, CancellationToken cancellationToken)
+		public Task<QueryExecutionResult> ExecuteAsync(string sql, Session session, CancellationToken cancellationToken)
 		{
-			return sqlExecutor.ExecuteAsync(sql, session, cancellationToken);
+			return sqlSessionExecutor.ExecuteAsync(sql, session, cancellationToken);
+		}
+
+		public Task<QueryExecutionResult> ExecuteAsync(string sql, CancellationToken cancellationToken = default)
+		{
+			return sqlExecutor.ExecuteAsync(sql, cancellationToken);
 		}
 	}
 }

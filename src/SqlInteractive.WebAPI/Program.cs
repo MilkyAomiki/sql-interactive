@@ -1,11 +1,13 @@
 using SqlInteractive.BLL.Services;
 using SqlInteractive.BLL.ServicesImpls;
 using SqlInteractive.BLL.ServicesInternal;
-using SqlInteractive.SqlExecution.Dapper.Configuration;
-using SqlInteractive.SqlExecution.Dapper.Db;
-using SqlInteractive.SqlExecution.Dapper.Services;
+using SqlInteractive.SqlExecution.Configuration;
+using SqlInteractive.SqlExecution.Db;
+using SqlInteractive.SqlExecution.Db.DbContexts;
+using SqlInteractive.SqlExecution.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls("http://*:8888", "https://*:4444");
 
 // Add services to the container.
 
@@ -22,8 +24,8 @@ builder.Services.AddSession(options =>
 	options.Cookie.IsEssential = true;
 });
 
-builder.Services.AddScoped<DbContext>();
-builder.Services.AddScoped<ISqlExecutor, SqlExecutor>();
+builder.Services.AddScoped<IDbContext, DbContextSqlServer>();
+builder.Services.AddScoped<ISqlSessionExecutor, SqlExecutorWithUsers>();
 builder.Services.AddScoped<ISqlService, SqlService>();
 builder.Services.AddOptions<DbOptions>().BindConfiguration("Db");
 

@@ -9,9 +9,9 @@ namespace SqlInteractive.WebAPI.Controllers;
 public class SqlExecutionController : ApiController
 {
 	private readonly ILogger<AppInfoController> logger;
-	private readonly ISqlExecutor sqlExecutor;
+	private readonly ISqlSessionExecutor sqlExecutor;
 
-	public SqlExecutionController(ILogger<AppInfoController> logger, ISqlExecutor sqlExecutor)
+	public SqlExecutionController(ILogger<AppInfoController> logger, ISqlSessionExecutor sqlExecutor)
 	{
 		this.logger = logger;
 		this.sqlExecutor = sqlExecutor;

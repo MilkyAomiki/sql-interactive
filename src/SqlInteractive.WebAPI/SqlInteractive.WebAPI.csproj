@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SqlInteractive.BLL\SqlInteractive.BLL.csproj" />
-    <ProjectReference Include="..\SqlInteractive.SqlExecution.Dapper\SqlInteractive.SqlExecution.Dapper.csproj" />
+    <ProjectReference Include="..\SqlInteractive.SqlExecution\SqlInteractive.SqlExecution.csproj" />
   </ItemGroup>
 
 </Project>
