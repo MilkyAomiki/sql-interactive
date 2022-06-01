@@ -1,0 +1,27 @@
+﻿<nav class="py-0 navbar navbar-expand-sm navbar-light bg-light">
+	<div class="container-fluid">
+		<a class="navbar-brand" href="#">Sql Interactive</a>
+		<button class="navbar-toggler" type="button" @onclick="ToggleNavMenu">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="container-fluid">
+			<div class="@NavMenuCssClass" id="navbarNavAltMarkup">
+				<div class="navbar-nav">
+					<NavLink class="nav-item nav-link" href="" Match="NavLinkMatch.All">SQL</NavLink>
+					<NavLink class="nav-item nav-link" href="about">About</NavLink>
+				</div>
+			</div>
+		</div>
+	</div>
+</nav>
+
+@code {
+	private bool collapseNavMenu = true;
+
+	private string NavMenuCssClass => collapseNavMenu ? "collapse navbar-collapse" : null;
+
+	private void ToggleNavMenu()
+	{
+		collapseNavMenu = !collapseNavMenu;
+	}
+}

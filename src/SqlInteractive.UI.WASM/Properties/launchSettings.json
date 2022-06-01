@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "SqlInteractive.MAUI.WASM": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://*:8888;https://*:4444"
+    }
+  }
+}

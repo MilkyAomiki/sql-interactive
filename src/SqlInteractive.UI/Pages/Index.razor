@@ -1,0 +1,94 @@
+﻿@page "/"
+@using Microsoft.Extensions.Logging
+@using SqlInteractive.BLL.Models
+@using SqlInteractive.UI.MAUI.Data
+@inject SqlExecutionService sqlExecutionService
+@inject IJSRuntime JS
+
+<div class="cotainer h-100" style="overflow: hidden;">
+    <div class="row h-100">
+        <div class="col-auto h-100 nopadding d-flex flex-column bg-light" style="width: 4.5rem;">
+    @*        <a href="/" class="d-block p-3 link- dark text-decoration-none" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
+              <svg class="bi" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+              <span class="visually-hidden">Icon-only</span>
+            </a>*@
+            <ul class="nav nav-pills flex-column mb-auto text-center">
+              <li class="nav-item">
+                <a id="execute-button" href="" @onclick="HandleExecute"><span class="oi oi-md oi-media-play"></span></a>
+              </li>
+            </ul>
+        </div>
+        <div class="col nopadding">
+            <div class="border-bottom" id="code-editor">
+                <div id="code-wrapper">
+                  <div class="code" id="queryInput" ></div>
+                </div>
+            </div>
+
+
+            <div id="code-exec-res">
+                @if(Tables is not null)
+                {
+                    @foreach (var table in Tables)
+                    {
+                        <div class="table-res">
+                            <table>
+                                <caption>@table.Name</caption>
+                                <thead>
+                                    <tr>
+                                        @foreach (var fieldName in table.ColumnNames)
+                                        {
+                                            <th>@fieldName</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var row in table.Rows)
+                                    {
+                                        <tr>
+                                            @foreach (var col in row)
+                                            {
+                                                <td>@col</td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                }
+
+                @if(SqlException is not null)
+                {
+                    <p>@SqlException</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private ICollection<Table> Tables;
+    private string SqlException;
+
+    private async Task SetTableAutocompletion(IDictionary<string, ICollection<string>> tableToColumns) => await JS.InvokeVoidAsync("setTableAutocompletion", tableToColumns);
+    private async Task<string> GetEditorContent() => await JS.InvokeAsync<string>("getEditorContent");
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+            await JS.InvokeVoidAsync("appendSqlEditor", "queryInput");
+    }
+
+    private async Task HandleExecute()
+    {
+        Tables = null;
+        SqlException = null;
+
+        var execResult = await sqlExecutionService.ExecuteSql(await GetEditorContent());
+        Tables = execResult.Tables;
+        SqlException = execResult.Exception;
+
+        //await SetTableAutocompletion(Tables.ToDictionary(t => t.Name, t => t.ColumnNames));
+    }
+}

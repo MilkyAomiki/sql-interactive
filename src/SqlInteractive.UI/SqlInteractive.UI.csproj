@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+			<SupportedPlatform Include="browser" />
+			<SupportedPlatform Include="macOS" />
+			<SupportedPlatform Include="Windows" />
+			<SupportedPlatform Include="ios" />
+			<SupportedPlatform Include="android" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="npm\" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SqlInteractive.BLL\SqlInteractive.BLL.csproj" />
+  </ItemGroup>
+
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+		<Exec Command="npm install" WorkingDirectory="npm" />
+		<Exec Command="npm run build" WorkingDirectory="npm" />
+	</Target>
+</Project>
