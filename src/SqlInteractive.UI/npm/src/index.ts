@@ -56,7 +56,7 @@ let language = new Compartment
 
 var theme = EditorView.theme({
 	".cm-editor .cm-content": {
-			fontFamily: "SFMono-Regular",
+		fontFamily: "SFMono-Regular",
 	},
 	".cm-content": {
 		background: "none",
@@ -186,12 +186,16 @@ const basicSetup: Extension = [
 		...completionKeymap,
 		...lintKeymap
 	]),
+	EditorView.updateListener.of(function (e) {
+		console.log('editor changed');
+		window.editorOnChange(e.state.doc.toString());
+	}),
 	theme,
 	language.of(sql({ upperCaseKeywords: true }))
 ]
 
 let startState = EditorState.create({
-	doc: "SELECT 'Hello World'",
+	doc: '',
 	extensions: [basicSetup]
 })
 
@@ -199,10 +203,17 @@ let view = new EditorView({ state: startState });
 
 let schemas: { [table: string]: readonly string[] };
 
-let appendSqlEditor = function (wrapperId: string) {
+let appendSqlEditor = function (wrapperId: string, dotNetEditor: DotNet.DotNetObject) {
+	console.log('editor initialized');
+	window.editorOnChange = (doc: string) => dotNetEditor.invokeMethodAsync("EditorOnChange", doc);
+
 	var wrapper = document.getElementById(wrapperId);
 	wrapper.appendChild(view.dom);
+
+	var transaction = view.state.update({ changes: { from: 0, to: view.state.doc.length, insert: "SELECT 'Hello World!'" } });
+	view.update([transaction]);
 }
+
 let getEditorContent = function()
 {
 	var doc = view.state.doc.toString();
@@ -220,6 +231,7 @@ declare global {
 		appendSqlEditor: any;
 		getEditorContent: any;
 		setTableAutocompletion: any;
+		editorOnChange: (doc: string) => Promise<void>;
 	}
 }
 

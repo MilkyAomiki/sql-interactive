@@ -1,16 +1,17 @@
 ﻿using Microsoft.Extensions.Logging;
+using SqlInteractive.Analyzer.Sqlite.Db;
 using SqlInteractive.BLL.Models;
-using SqlInteractive.BLL.ServicesInternal;
+using SqlInteractive.BLL.SqlAnalysis;
 using SqlInteractive.SqlExecution.Db;
 
 namespace SqlInteractive.SqlExecution.Services;
 
-public class SqlExecutor : ISqlExecutor
+public class SqliteAnalyzer : SqlServerParsingService, ISqlAnalyzer
 {
 	private readonly IDbContext dbContext;
-	private readonly ILogger<SqlExecutorWithUsers> logger;
+	private readonly ILogger<SqliteAnalyzer> logger;
 
-	public SqlExecutor(IDbContext dbContext, ILogger<SqlExecutorWithUsers> logger)
+	public SqliteAnalyzer(IDbContext dbContext, ILogger<SqliteAnalyzer> logger, ILogger<SqlServerParsingService> logger2) : base(logger2)
 	{
 		this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 		this.logger = logger;

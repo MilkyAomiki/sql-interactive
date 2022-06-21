@@ -1,14 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
-using SqlInteractive.BLL.Services;
-using SqlInteractive.BLL.ServicesImpls;
-using SqlInteractive.BLL.ServicesInternal;
-using SqlInteractive.UI.MAUI.Data;
-using SqlInteractive.SqlExecution.Configuration;
-using SqlInteractive.SqlExecution.Db;
-using SqlInteractive.SqlExecution.Db.DbContexts;
-using SqlInteractive.SqlExecution.Services;
 using System.Reflection;
+using SqlInteractive.UI.Services;
+using SqlInteractive.UI.MAUI.Services;
+using SqlInteractive.AppConfiguration;
 
 namespace SqlInteractive.UI.MAUI;
 
@@ -28,17 +23,12 @@ public static class MauiProgram
 		builder.Configuration.AddJsonFile(new EmbeddedFileProvider(assembly), "appsettings.json", optional: false, false);
 		using var stream = typeof(App).Assembly.GetManifestResourceStream("appsettings.json");
 
-		builder.Services.AddOptions<DbOptions>().BindConfiguration("Db");
-
 		builder.Services.AddMauiBlazorWebView();
 #if DEBUG
 		builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
-		builder.Services.AddScoped<ISqlExecutor, SqlExecutor>();
-		builder.Services.AddScoped<ISqlSessionExecutor, SqlExecutorWithUsers>();
-		builder.Services.AddScoped<IDbContext, DbContextSqlite>();
-		builder.Services.AddScoped<ISqlService, SqlService>();
-		builder.Services.AddSingleton<SqlExecutionService>();
+		CommonConfiguration.AddServices(builder.Services);
+		builder.Services.AddScoped<IStaticFilesService, StaticFilesService>();
 
 		return builder.Build();
 	}

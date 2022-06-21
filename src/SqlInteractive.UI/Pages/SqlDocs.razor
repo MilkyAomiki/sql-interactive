@@ -1,0 +1,63 @@
+﻿@page "/docs/{*specificDocumentRoute}"
+@using SqlInteractive.BLL.Models
+
+@using SqlInteractive.UI.Services
+
+<div class="cotainer h-100" style="overflow: hidden;">
+    <div class="row h-100">
+
+        <div class="col-auto h-100 d-flex flex-column bg-light" style="width: 14rem;">
+            <ul class="nav nav-pills flex-column mb-auto p-3">
+              <span class="lead navbar-text">
+                  Table
+              </span>
+              <li class="nav-item">
+				<NavLink class="nav-link" href="docs/table/select">SELECT</NavLink>
+              </li>
+              <li class="nav-item">
+				<NavLink class="nav-link" href="docs/table/create">CREATE</NavLink>
+              </li>
+              <li class="nav-item">
+				<NavLink class="nav-link" href="docs/table/update">UPDATE</NavLink>
+              </li>
+              <li class="nav-item">
+				<NavLink class="nav-link" href="docs/table/delete">DELETE</NavLink>
+              </li>
+              <li class="nav-item">
+				<NavLink class="nav-link" href="docs/table/alter">ALTER</NavLink>
+              </li>
+              <li class="nav-item">
+				<NavLink class="nav-link" href="docs/table/drop">DROP</NavLink>
+              </li>
+            </ul>
+        </div>
+
+        <div class="col mx-auto w-50 mt-5" style="max-width: 50%">
+	        <Markdown FilePath="@MdFilePath" />
+        </div>
+    </div>
+</div>
+
+@code {
+	public string MdFilePath => $"sql-docs/{SpecificDocumentRoute}.md";
+
+    [Parameter]
+	public string SpecificDocumentRoute { get => specificDocumentRoute; set => specificDocumentRoute = (string.IsNullOrEmpty(value) ? "index" : value); }
+	private string specificDocumentRoute;
+    
+	public static readonly IDictionary<Statement, string> getFriendlyName = new Dictionary<Statement, string>
+	{
+		{ Statement.Select, "SELECT" },
+		{ Statement.CreateTable, "CREATE" },
+		{ Statement.UpdateTable, "UPDATE" },
+		{ Statement.DropTable, "DROP" }
+	};
+
+	public static readonly IDictionary<Statement, string> statementsToPaths = new Dictionary<Statement, string>
+	{
+		{ Statement.Select, "docs/table/select" },
+		{ Statement.CreateTable, "docs/table/create" },
+		{ Statement.UpdateTable, "docs/table/update" },
+		{ Statement.DropTable, "docs/table/drop" }
+	};
+}

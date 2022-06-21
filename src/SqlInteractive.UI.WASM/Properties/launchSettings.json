@@ -6,7 +6,9 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://*:8888;https://*:4444"
+      "externalUrlConfiguration": true,
+      "applicationUrl": "http://aomiki.ru:88;https://aomiki.ru:443"
     }
   }
+
 }

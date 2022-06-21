@@ -6,13 +6,22 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>portable</DebugType>
+    <DefineConstants>$(DefineConstants)TRACE;</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>portable</DebugType>
+    <DefineConstants>$(DefineConstants)TRACE;</DefineConstants>
+  </PropertyGroup>
 
   <ItemGroup>
-			<SupportedPlatform Include="browser" />
-			<SupportedPlatform Include="macOS" />
-			<SupportedPlatform Include="Windows" />
-			<SupportedPlatform Include="ios" />
-			<SupportedPlatform Include="android" />
+		<SupportedPlatform Include="browser" />
+		<SupportedPlatform Include="macOS" />
+		<SupportedPlatform Include="Windows" />
+		<SupportedPlatform Include="ios" />
+		<SupportedPlatform Include="android" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -21,6 +30,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
+    <PackageReference Include="Markdown.ColorCode" />
   </ItemGroup>
 
   <ItemGroup>

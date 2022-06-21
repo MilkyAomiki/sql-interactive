@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 
-namespace SqlInteractive.SqlExecution.Db;
+namespace SqlInteractive.Analyzer.Sqlite.Db;
 
 public interface IDbContext
 {

@@ -1,6 +1,7 @@
 using System.Data.Common;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
+using SqlInteractive.Analyzer.Sqlite.Db;
 using SqlInteractive.SqlExecution.Configuration;
 
 namespace SqlInteractive.SqlExecution.Db.DbContexts;

@@ -55,6 +55,7 @@
 
 	<ItemGroup>
 		<EmbeddedResource Include="appsettings.json" />
+    <MauiAsset Include="..\SqlInteractive.UI\wwwroot\sql-docs\**" LogicalName="sql-docs\%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
   <ItemGroup>
@@ -62,8 +63,9 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\SqlInteractive.AppConfiguration\SqlInteractive.AppConfiguration.csproj" />
     <ProjectReference Include="..\SqlInteractive.BLL\SqlInteractive.BLL.csproj" />
-    <ProjectReference Include="..\SqlInteractive.SqlExecution\SqlInteractive.SqlExecution.csproj" />
+    <ProjectReference Include="..\SqlInteractive.Analyzer.Sqlite\SqlInteractive.Analyzer.Sqlite.csproj" />
     <ProjectReference Include="..\SqlInteractive.UI\SqlInteractive.UI.csproj" />
   </ItemGroup>
 

@@ -8,6 +8,7 @@
 			<div class="@NavMenuCssClass" id="navbarNavAltMarkup">
 				<div class="navbar-nav">
 					<NavLink class="nav-item nav-link" href="" Match="NavLinkMatch.All">SQL</NavLink>
+					<NavLink class="nav-item nav-link" href="docs">Documentation</NavLink>
 					<NavLink class="nav-item nav-link" href="about">About</NavLink>
 				</div>
 			</div>
@@ -18,7 +19,7 @@
 @code {
 	private bool collapseNavMenu = true;
 
-	private string NavMenuCssClass => collapseNavMenu ? "collapse navbar-collapse" : null;
+	private string? NavMenuCssClass => collapseNavMenu ? "collapse navbar-collapse" : null;
 
 	private void ToggleNavMenu()
 	{

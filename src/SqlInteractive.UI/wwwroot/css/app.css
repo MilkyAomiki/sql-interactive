@@ -3,6 +3,9 @@ html, body, #app, .page, main, main > div {
   height: 100%;
   overflow: hidden;
 }
+.cm-editor{
+    height: 100%
+}
 #execute-button {
     color: #8501ff;
 }
@@ -16,7 +19,7 @@ html, body, #app, .page, main, main > div {
     margin: 20px;
 }
 
-#code-exec-res .table-res {
+#code-exec-res .table-res, dynamic-docs {
     display: inline-block;
     margin: 0.6em;
 }

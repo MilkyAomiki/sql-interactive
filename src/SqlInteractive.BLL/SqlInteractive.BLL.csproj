@@ -7,6 +7,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="TSQL.Parser" />
+    <PackageReference Include="Microsoft.SqlServer.Management.SqlParser" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
 	</ItemGroup>
 </Project>

@@ -1,83 +1,130 @@
 ﻿@page "/"
 @using Microsoft.Extensions.Logging
 @using SqlInteractive.BLL.Models
-@using SqlInteractive.UI.MAUI.Data
-@inject SqlExecutionService sqlExecutionService
+@using SqlInteractive.BLL.Services
+@using SqlInteractive.UI.Services
+@inject ISqlService sqlService
 @inject IJSRuntime JS
+@inject ILogger<Index> logger
 
 <div class="cotainer h-100" style="overflow: hidden;">
     <div class="row h-100">
-        <div class="col-auto h-100 nopadding d-flex flex-column bg-light" style="width: 4.5rem;">
-    @*        <a href="/" class="d-block p-3 link- dark text-decoration-none" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
-              <svg class="bi" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-              <span class="visually-hidden">Icon-only</span>
-            </a>*@
+        <div class="col-auto h-100 nopadding d-flex flex-column bg-light" style="width: 6.5rem;">
             <ul class="nav nav-pills flex-column mb-auto text-center">
               <li class="nav-item">
                 <a id="execute-button" href="" @onclick="HandleExecute"><span class="oi oi-md oi-media-play"></span></a>
               </li>
+              <li class="nav-item">
+                <select class="mx-auto w-75 form-select form-select-sm" @bind="Dialect" aria-label=".form-select-sm example" style="background:none; padding:0">
+                  <option value="@SqlDialect.SQLite">SQLite</option>
+                </select>
+              </li>
             </ul>
         </div>
         <div class="col nopadding">
-            <div class="border-bottom" id="code-editor">
-                <div id="code-wrapper">
-                  <div class="code" id="queryInput" ></div>
+            <div class="border-bottom" id="code-editor" style="resize: vertical; overflow: auto;">
+                <div id="code-wrapper" style="height: 100%">
+                  <div class="h-100 code" id="queryInput"  style="height: 100%"></div>
                 </div>
             </div>
 
+            <ul class="nav nav-tabs">
+              <li class="nav-item">
+                <a class="nav-link @((ActiveTab is Tab.ExecResult? "active" : ""))" @onclick="() => ActiveTab = Tab.ExecResult" href="#">Result</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link @((ActiveTab is Tab.DynamicDocs? "active" : ""))" @onclick="() => ActiveTab = Tab.DynamicDocs" href="#">Suggested documentation</a>
+              </li>
+            </ul>
 
-            <div id="code-exec-res">
-                @if(Tables is not null)
-                {
-                    @foreach (var table in Tables)
+            @if (ActiveTab is Tab.ExecResult)
+            {
+                <div class="tab-pane fade show active" role="tabpanel" id="code-exec-res">
+                    @if (Tables is not null)
                     {
-                        <div class="table-res">
-                            <table>
-                                <caption>@table.Name</caption>
-                                <thead>
-                                    <tr>
-                                        @foreach (var fieldName in table.ColumnNames)
-                                        {
-                                            <th>@fieldName</th>
-                                        }
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var row in table.Rows)
-                                    {
+                        @foreach (var table in Tables)
+                        {
+                            <div class="table-res">
+                                <table>
+                                    <caption>@table.Name</caption>
+                                    <thead>
                                         <tr>
-                                            @foreach (var col in row)
+                                            @foreach (var fieldName in table.ColumnNames)
                                             {
-                                                <td>@col</td>
+                                                <th>@fieldName</th>
                                             }
                                         </tr>
-                                    }
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var row in table.Rows)
+                                        {
+                                            <tr>
+                                                @foreach (var col in row)
+                                                {
+                                                    <td>@col</td>
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    }
+
+                    @if (SqlException is not null)
+                    {
+                        <p>@SqlException</p>
+                    }
+                </div>
+            }
+
+            @if (ActiveTab is Tab.DynamicDocs)
+            {
+                <div class="tab-pane fade show active" role="tabpanel">
+                    @if (StatementsInSql is not null)
+                    {
+                        <div class="list-group list-group-flush" id="dynamic-docs">
+                            @foreach (var statement in StatementsInSql)
+                            {
+                                <NavLink class="nav-link list-group-item list-group-item-action" href="@SqlDocs.statementsToPaths[statement]">@SqlDocs.getFriendlyName[statement]</NavLink>
+                            }
                         </div>
                     }
-                }
+                </div>
+            }
 
-                @if(SqlException is not null)
-                {
-                    <p>@SqlException</p>
-                }
-            </div>
         </div>
     </div>
 </div>
 
 @code {
-    private ICollection<Table> Tables;
-    private string SqlException;
+    //output
+    private ICollection<Table>? Tables;
+    private string? SqlException;
+    private IEnumerable<Statement>? StatementsInSql;
+
+    //input
+    private string EditorContent = "";
+    private SqlDialect Dialect = SqlDialect.SQLite;
+    private Tab ActiveTab = Tab.DynamicDocs;
 
     private async Task SetTableAutocompletion(IDictionary<string, ICollection<string>> tableToColumns) => await JS.InvokeVoidAsync("setTableAutocompletion", tableToColumns);
     private async Task<string> GetEditorContent() => await JS.InvokeAsync<string>("getEditorContent");
+    private DotNetObjectReference<Index>? dotNetHelper;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if(firstRender)
-            await JS.InvokeVoidAsync("appendSqlEditor", "queryInput");
+        {
+            dotNetHelper = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("appendSqlEditor", "queryInput", dotNetHelper);
+        }
+    }
+
+    private Task SetActiveTab(Tab tab)
+    {
+        ActiveTab = tab;
+        return Task.CompletedTask;
     }
 
     private async Task HandleExecute()
@@ -85,10 +132,32 @@
         Tables = null;
         SqlException = null;
 
-        var execResult = await sqlExecutionService.ExecuteSql(await GetEditorContent());
+        var execResult = await sqlService.ExecuteAsync(EditorContent, SqlDialect.SQLite);
         Tables = execResult.Tables;
         SqlException = execResult.Exception;
 
         //await SetTableAutocompletion(Tables.ToDictionary(t => t.Name, t => t.ColumnNames));
+    }
+
+    [JSInvokable]
+    public async Task EditorOnChange(string doc)
+    {
+        EditorContent = doc;
+        if (doc is null) throw new ArgumentNullException(nameof(doc));
+
+        StatementsInSql = sqlService.GetStatements(doc, Dialect);
+        
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        dotNetHelper.Dispose();
+    }
+
+    public enum Tab
+    {
+        ExecResult = 1,
+        DynamicDocs = 2
     }
 }

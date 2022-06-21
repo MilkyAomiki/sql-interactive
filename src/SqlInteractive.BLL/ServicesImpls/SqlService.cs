@@ -1,28 +1,30 @@
 using SqlInteractive.BLL.Models;
 using SqlInteractive.BLL.Services;
-using SqlInteractive.BLL.ServicesInternal;
+using SqlInteractive.BLL.SqlAnalysis;
+using SqlInteractive.BLL.SqlAnalysis.Modules;
 
-namespace SqlInteractive.BLL.ServicesImpls
+namespace SqlInteractive.BLL.ServicesImpls;
+
+/// <summary>
+///	Медиатор подсистемы работы с SQL
+/// </summary>
+public class SqlService : ISqlService
 {
-	public class SqlService : ISqlService
+    private readonly ISqlAnalyzerSelector analyzerSelector;
+
+    public SqlService(
+		ISqlAnalyzerSelector analyzerSelector)
 	{
-		private readonly ISqlExecutor sqlExecutor;
-		private readonly ISqlSessionExecutor sqlSessionExecutor;
+        this.analyzerSelector = analyzerSelector;
+    }
 
-		public SqlService(ISqlExecutor sqlExecutor, ISqlSessionExecutor sqlSessionExecutor)
-		{
-			this.sqlExecutor = sqlExecutor;
-			this.sqlSessionExecutor = sqlSessionExecutor;
-		}
+	public Task<QueryExecutionResult> ExecuteAsync(string sql, SqlDialect sqlDialect, CancellationToken cancellationToken = default)
+	{
+		return analyzerSelector.GetAnalyzer(sqlDialect).ExecuteAsync(sql, cancellationToken);
+	}
 
-		public Task<QueryExecutionResult> ExecuteAsync(string sql, Session session, CancellationToken cancellationToken)
-		{
-			return sqlSessionExecutor.ExecuteAsync(sql, session, cancellationToken);
-		}
-
-		public Task<QueryExecutionResult> ExecuteAsync(string sql, CancellationToken cancellationToken = default)
-		{
-			return sqlExecutor.ExecuteAsync(sql, cancellationToken);
-		}
+	public IEnumerable<Statement> GetStatements(string sql, SqlDialect sqlDialect)
+	{
+		return analyzerSelector.GetAnalyzer(sqlDialect).GetStatements(sql);
 	}
 }

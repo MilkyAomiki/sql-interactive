@@ -4,14 +4,20 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageVersion Include="TSQL.Parser" Version="2.1.0" />
-		<PackageVersion Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-		<PackageVersion Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+		<PackageVersion Include="Microsoft.SqlServer.Management.SqlParser" Version="160.22506.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="6.0.5" />
-		<PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.5" />
 		<PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.5" />
 		<PackageVersion Include="Microsoft.Extensions.FileProviders.Embedded" Version="6.0.5" />
+		<PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+		<PackageVersion Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+		<PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+
+		<PackageVersion Include="Markdown.ColorCode" Version="1.0.1" />
+		<PackageVersion Include="TSQL.Parser" Version="2.1.0" />
+		<PackageVersion Include="BlazorMarkdown" Version="1.0.0" />
+		<PackageVersion Include="Swashbuckle.AspNetCore" Version="6.2.3" />
 		
 		<PackageVersion Include="Microsoft.Data.SqlClient" Version="4.1.0" />
 		<PackageVersion Include="Microsoft.Data.Sqlite.Core" Version="6.0.5" />
